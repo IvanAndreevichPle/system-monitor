@@ -1,5 +1,7 @@
 # Binaries
 bin/
+monitor
+client
 *.exe
 *.exe~
 *.dll
