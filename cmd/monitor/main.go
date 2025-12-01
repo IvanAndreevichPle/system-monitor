@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -11,18 +10,19 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/IvanAndreevichPle/system-monitor/internal/config"
 	"github.com/IvanAndreevichPle/system-monitor/internal/server"
 )
 
-var (
-	port = flag.Int("port", 8080, "Port to listen on")
-)
-
 func main() {
-	flag.Parse()
+	// Load configuration
+	cfg, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
+	}
 
 	// Create listener
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", cfg.Server.Port))
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
@@ -42,7 +42,8 @@ func main() {
 		s.GracefulStop()
 	}()
 
-	log.Printf("Server listening on port %d", *port)
+	log.Printf("Server listening on port %d", cfg.Server.Port)
+	log.Printf("Log level: %s, format: %s", cfg.Logging.Level, cfg.Logging.Format)
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
