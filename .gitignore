@@ -1,5 +1,7 @@
 # Binaries
 bin/
+monitor
+client
 *.exe
 *.exe~
 *.dll
@@ -33,10 +35,8 @@ Thumbs.db
 /tmp/
 *.tmp
 
-# Generated files
-*.pb.go
+# Generated files (except Protobuf - we commit them for CI)
 *.pb.gw.go
-api/proto/*.go
 
 # Logs
 *.log
