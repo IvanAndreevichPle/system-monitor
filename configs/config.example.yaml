@@ -1,0 +1,15 @@
+# Example configuration file for system-monitor
+# Copy this file to config.yaml and modify as needed
+
+server:
+  port: 8080
+
+logging:
+  level: info  # debug, info, warn, error
+  format: text # json, text
+
+collector:
+  default_interval_seconds: 5        # Default interval for sending metrics (N seconds)
+  default_averaging_window_seconds: 15 # Default averaging window (M seconds)
+  collection_interval_seconds: 1      # How often to collect metrics internally
+
