@@ -1,0 +1,173 @@
+syntax = "proto3";
+
+package metrics;
+
+option go_package = "github.com/IvanAndreevichPle/system-monitor/api/proto";
+
+// SystemMonitor service provides system metrics via server-side streaming
+service SystemMonitor {
+  // GetMetrics streams system metrics to clients
+  // Client specifies interval (N seconds) and averaging window (M seconds)
+  rpc GetMetrics(GetMetricsRequest) returns (stream MetricsSnapshot);
+}
+
+// GetMetricsRequest specifies parameters for metrics collection
+message GetMetricsRequest {
+  // Interval in seconds - how often to send snapshots
+  int32 interval_seconds = 1;
+  // Averaging window in seconds - over what period to average metrics
+  int32 averaging_window_seconds = 2;
+}
+
+// MetricsSnapshot contains all collected system metrics
+message MetricsSnapshot {
+  // Timestamp when snapshot was taken (Unix timestamp)
+  int64 timestamp = 1;
+  
+  // Load average metrics
+  LoadAverage load_average = 2;
+  
+  // CPU metrics
+  CPUMetrics cpu = 3;
+  
+  // Disk I/O metrics
+  DiskMetrics disk = 4;
+  
+  // Filesystem information
+  FilesystemInfo filesystem = 5;
+  
+  // Network statistics
+  NetworkStats network = 6;
+  
+  // Socket statistics
+  SocketStats sockets = 7;
+}
+
+// LoadAverage contains system load average values
+message LoadAverage {
+  // 1-minute load average
+  double load1 = 1;
+  // 5-minute load average
+  double load5 = 2;
+  // 15-minute load average
+  double load15 = 3;
+}
+
+// CPUMetrics contains CPU usage statistics
+message CPUMetrics {
+  // Percentage of time spent in user mode
+  double user_percent = 1;
+  // Percentage of time spent in system mode
+  double system_percent = 2;
+  // Percentage of time idle
+  double idle_percent = 3;
+}
+
+// DiskMetrics contains disk I/O statistics
+message DiskMetrics {
+  // Transfers per second
+  double tps = 1;
+  // Kilobytes per second (read + write)
+  double kb_per_sec = 2;
+  // Per-disk statistics
+  repeated DiskStats disks = 3;
+}
+
+// DiskStats contains statistics for a single disk
+message DiskStats {
+  // Disk device name (e.g., "sda", "nvme0n1")
+  string device = 1;
+  // Transfers per second for this disk
+  double tps = 2;
+  // Kilobytes per second for this disk
+  double kb_per_sec = 3;
+}
+
+// FilesystemInfo contains filesystem usage information
+message FilesystemInfo {
+  // Per-filesystem statistics
+  repeated FilesystemStats filesystems = 1;
+}
+
+// FilesystemStats contains statistics for a single filesystem
+message FilesystemStats {
+  // Filesystem mount point
+  string mount_point = 1;
+  // Used space in megabytes
+  int64 used_mb = 2;
+  // Percentage of space used
+  double used_percent = 3;
+  // Used inodes
+  int64 used_inodes = 4;
+  // Percentage of inodes used
+  double inodes_percent = 5;
+}
+
+// NetworkStats contains network statistics
+message NetworkStats {
+  // Top talkers by protocol
+  repeated ProtocolStats protocol_stats = 1;
+  // Top talkers by traffic (source:port -> dest:port)
+  repeated TrafficStats traffic_stats = 2;
+}
+
+// ProtocolStats contains statistics for a network protocol
+message ProtocolStats {
+  // Protocol name (TCP, UDP, ICMP, etc.)
+  string protocol = 1;
+  // Total bytes transferred
+  int64 bytes = 2;
+  // Percentage of total bytes
+  double percent = 3;
+}
+
+// TrafficStats contains statistics for network traffic
+message TrafficStats {
+  // Source IP:port
+  string source = 1;
+  // Destination IP:port
+  string destination = 2;
+  // Protocol
+  string protocol = 3;
+  // Bytes per second
+  double bytes_per_second = 4;
+}
+
+// SocketStats contains socket statistics
+message SocketStats {
+  // Listening sockets
+  repeated ListeningSocket listening_sockets = 1;
+  // TCP connection states
+  TCPConnectionStates tcp_states = 2;
+}
+
+// ListeningSocket represents a listening socket
+message ListeningSocket {
+  // Process command name
+  string command = 1;
+  // Process ID
+  int32 pid = 2;
+  // User name
+  string user = 3;
+  // Protocol (TCP, UDP)
+  string protocol = 4;
+  // Port number
+  int32 port = 5;
+}
+
+// TCPConnectionStates contains counts of TCP connections by state
+message TCPConnectionStates {
+  // Number of connections in ESTABLISHED state
+  int32 established = 1;
+  // Number of connections in FIN_WAIT state
+  int32 fin_wait = 2;
+  // Number of connections in SYN_RECEIVED state
+  int32 syn_received = 3;
+  // Number of connections in TIME_WAIT state
+  int32 time_wait = 4;
+  // Number of connections in CLOSE_WAIT state
+  int32 close_wait = 5;
+  // Number of connections in other states
+  int32 other = 6;
+}
+
