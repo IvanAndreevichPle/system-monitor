@@ -1,5 +1,10 @@
 # System Monitor
 
+[![CI](https://github.com/IvanAndreevichPle/system-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/IvanAndreevichPle/system-monitor/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/IvanAndreevichPle/system-monitor)](https://goreportcard.com/report/github.com/IvanAndreevichPle/system-monitor)
+[![Go Version](https://img.shields.io/badge/go-1.22+-blue.svg)](https://golang.org)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Final project for OTUS Golang course: System monitoring daemon that collects system metrics and streams them to clients via gRPC.
 
 ## Description
